@@ -14,9 +14,16 @@ namespace ISAD251_Coursework.Models
     
     public partial class User
     {
+        public User()
+        {
+            this.Orders = new HashSet<Order>();
+        }
+    
         public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public bool IsAdmin { get; set; }
+    
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

@@ -16,5 +16,10 @@ namespace ISAD251_Coursework.Models
     {
         public int Id { get; set; }
         public System.TimeSpan OrderTime { get; set; }
+        public int UserId { get; set; }
+        public int ItemId { get; set; }
+    
+        public virtual User User { get; set; }
+        public virtual Item Item { get; set; }
     }
 }

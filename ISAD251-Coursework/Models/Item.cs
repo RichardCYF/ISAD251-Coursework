@@ -14,6 +14,11 @@ namespace ISAD251_Coursework.Models
     
     public partial class Item
     {
+        public Item()
+        {
+            this.Orders = new HashSet<Order>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -21,5 +26,7 @@ namespace ISAD251_Coursework.Models
         public string UnitPrice { get; set; }
         public string IsSnack { get; set; }
         public bool IsWithdrawn { get; set; }
+    
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

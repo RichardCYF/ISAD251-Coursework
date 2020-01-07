@@ -15,6 +15,14 @@
           <EntitySet Name="Users" EntityType="Model.User" />
           <EntitySet Name="Orders" EntityType="Model.Order" />
           <EntitySet Name="Items" EntityType="Model.Item" />
+          <AssociationSet Name="UserOrder" Association="Model.UserOrder">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="OrderItem" Association="Model.OrderItem">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="Item" EntitySet="Items" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -24,6 +32,7 @@
           <Property Name="Username" Type="String" Nullable="false" />
           <Property Name="Password" Type="String" Nullable="false" />
           <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Model.UserOrder" FromRole="User" ToRole="Order" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -31,6 +40,10 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OrderTime" Type="Time" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Model.UserOrder" FromRole="Order" ToRole="User" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Item" Relationship="Model.OrderItem" FromRole="Order" ToRole="Item" />
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Item">
           <Key>
@@ -43,7 +56,32 @@
           <Property Name="UnitPrice" Type="String" Nullable="false" />
           <Property Name="IsSnack" Type="String" Nullable="false" />
           <Property Name="IsWithdrawn" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Model.OrderItem" FromRole="Item" ToRole="Order" />
         </EntityType>
+        <Association Name="UserOrder">
+          <End Type="Model.User" Role="User" Multiplicity="1" />
+          <End Type="Model.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OrderItem">
+          <End Type="Model.Order" Role="Order" Multiplicity="*" />
+          <End Type="Model.Item" Role="Item" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
