@@ -25,5 +25,8 @@ namespace ISAD251_Coursework.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public DbSet<User> Users { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Item> Items { get; set; }
     }
 }
