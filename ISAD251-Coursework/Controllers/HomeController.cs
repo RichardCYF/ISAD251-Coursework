@@ -13,16 +13,16 @@ namespace ISAD251_Coursework.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Customer()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Customer Page";
 
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult Admin()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Admin Page";
 
             return View();
         }
