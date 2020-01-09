@@ -21,10 +21,8 @@ namespace ISAD251_Coursework.Models
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string ImagePath { get; set; }
-        public string UnitPrice { get; set; }
-        public string IsSnack { get; set; }
+        public decimal UnitPrice { get; set; }
+        public bool IsSnack { get; set; }
         public bool IsWithdrawn { get; set; }
     
         public virtual ICollection<Order> Orders { get; set; }

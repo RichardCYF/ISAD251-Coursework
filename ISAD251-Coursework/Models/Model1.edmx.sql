@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 01/08/2020 06:19:43
+-- Date Created: 01/08/2020 08:32:41
 -- Generated from EDMX file: C:\Users\Dick\Documents\ISAD251-Coursework\ISAD251-Coursework\Models\Model1.edmx
 -- --------------------------------------------------
 
@@ -17,11 +17,26 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_UserOrder]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Orders] DROP CONSTRAINT [FK_UserOrder];
+GO
+IF OBJECT_ID(N'[dbo].[FK_OrderItem]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Orders] DROP CONSTRAINT [FK_OrderItem];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[Users]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Users];
+GO
+IF OBJECT_ID(N'[dbo].[Orders]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Orders];
+GO
+IF OBJECT_ID(N'[dbo].[Items]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Items];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -50,9 +65,9 @@ CREATE TABLE [dbo].[Items] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(max)  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
-    [ImagePath] nvarchar(max)  NOT NULL,
-    [UnitPrice] nvarchar(max)  NOT NULL,
-    [IsSnack] nvarchar(max)  NOT NULL,
+    [ImagePath] nvarchar(max)  NULL,
+    [UnitPrice] decimal(18,0)  NOT NULL,
+    [IsSnack] bit  NOT NULL,
     [IsWithdrawn] bit  NOT NULL
 );
 GO
