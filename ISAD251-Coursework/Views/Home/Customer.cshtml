@@ -2,30 +2,48 @@
     ViewBag.Title = "Customer Page";
 }
 <h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
 <script>
-    $(document).ready(function () {
-        $.getJSON("../api/items",
-        function (data) {
-        var row;
-            for (var i = 0; i < data.length; i++) {
-                    row = $('<tbody><tr/>');
-                    row.append("<td>" + data[i].Name + "</td>");
-                    row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
-                if (!data[i].IsSnack) {
-                    row.append("<td>Drink</td>");
-                } else {row.append("<td>Snack</td>");}
-                    row.append("<td><form>\
+    function loadmenu(type){
+        $(document).ready(function () {
+            $.getJSON("../api/items",
+                function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var row;
+                        if (!data[i].IsWithdrawn) {
+                            if (type == 'snack' && !data[i].IsSnack) { row = $('<tbody hidden><tr/>'); }
+                            else if (type == 'drink' && data[i].IsSnack) { row = $('<tbody hidden><tr/>'); }
+                            else { row = $('<tbody><tr/>'); }
+                            row.append("<td>" + data[i].Name + "</td>");
+                            row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
+                            if (!data[i].IsSnack) {
+                                row.append("<td>Drink</td>");
+                            } else { row.append("<td>Snack</td>"); }
+                            row.append("<td><form>\
                                 <input type='hidden' name='Id' value='" + data[i].Id + "'>\
                                 <input type='number' name='Quantity' min='1' max='9' value='1'>\
                                 <input type='submit' value='Place Order'>\
                                 </form></td></tbody>");
-                    $('#tableofmenu').append(row);
+                            $('#tableofmenu').append(row);
+                        }
+                    }
+                });
+        });
+    }
+    function selectmenu(type){
+            $('#tableofmenu tbody').empty();
+            switch (type) {
+                case "drink": loadmenu("drink"); break;
+                case "snack": loadmenu("snack"); break;
+                default: loadmenu("drink"); loadmenu("snack");
             }
-            });
-    });
+    }
+    selectmenu("both");
 </script>
+<h1>Menu</h1>
+<button onclick="selectmenu('drink')">Drinks</button>
+<button onclick="selectmenu('snack')">Snacks</button>
+<button onclick="selectmenu('both')">Everything</button>
 <table id='tableofmenu' class="table table-bordered table-condensed table-hover table-striped">
         <thead>
         <tr>

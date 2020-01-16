@@ -54,6 +54,7 @@ Add Items To Menu
                 <th>Name</th>
                 <th>Price</th>
                 <th>Type</th>
+                <th>Status</th>
                 <th></th>
             </tr>
         </thead>
@@ -94,6 +95,7 @@ Add Items To Menu
             success: function () {
                 $('#table2 tbody').empty();
                 loaditems();
+                alert("Update Successful");
             }
         })
     }
@@ -110,6 +112,9 @@ Add Items To Menu
                         if (!data[i].IsSnack) {
                             row.append("<td>Drink</td>");
                         } else { row.append("<td>Snack</td>"); }
+                        if (data[i].IsWithdrawn) {
+                            row.append("<td>Withdrawn</td>");
+                        } else { row.append("<td>Available</td>"); }
                         row.append("<td><button onclick='deleteitem(" + data[i].Id + ")'>Delete Item</button>\
                                         <button onclick='loadedititem(" + i + ")'>Edit Item</button></td></tbody>");
 
@@ -125,8 +130,8 @@ Add Items To Menu
                     document.getElementById("EId").value = data[id].Id;
                     document.getElementById("EName").value = data[id].Name;
                     document.getElementById("EUnitPrice").value = data[id].UnitPrice;
-                    document.getElementById("EIsSnack").value = data[id].IsSnack;
-                    document.getElementById("EIsWithdrawn").value = data[id].IsWithdrawn;
+                    document.getElementById("EIsSnack").checked = data[id].IsSnack;
+                    document.getElementById("EIsWithdrawn").checked = data[id].IsWithdrawn;
                 });
         });
         document.getElementById("etable").style.display = "table";
@@ -135,8 +140,8 @@ Add Items To Menu
         var eitem = {Id: document.getElementById("EId").value,
                      Name: document.getElementById("EName").value,
                      UnitPrice: document.getElementById("EUnitPrice").value,
-                     IsSnack: document.getElementById("EIsSnack").value,
-                     IsWithdrawn: document.getElementById("EIsWithdrawn").value,
+                     IsSnack: document.getElementById("EIsSnack").checked,
+                     IsWithdrawn: document.getElementById("EIsWithdrawn").checked,
         };
         $.ajax({
             url: '../api/items/'+document.getElementById("EId").value,
@@ -148,7 +153,7 @@ Add Items To Menu
                 $('#table2 tbody').empty();
                 loaditems();
                 document.getElementById("etable").style.display = "none";
-                alert("Update Successfully");
+                alert("Update Successful");
             },
             error: function () {
                 alert("error");
