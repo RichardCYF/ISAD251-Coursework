@@ -10,44 +10,31 @@
         function (data) {
         var row;
             for (var i = 0; i < data.length; i++) {
-                if (!data[i].IsSnack) { 
-                    row = $('<tr/>');
-                    row.append("<td>" + data[i].Id + "</td>");
+                    row = $('<tbody><tr/>');
                     row.append("<td>" + data[i].Name + "</td>");
                     row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
+                if (!data[i].IsSnack) {
                     row.append("<td>Drink</td>");
+                } else {row.append("<td>Snack</td>");}
                     row.append("<td><form>\
                                 <input type='hidden' name='Id' value='" + data[i].Id + "'>\
                                 <input type='number' name='Quantity' min='1' max='9' value='1'>\
                                 <input type='submit' value='Place Order'>\
-                                </form></td>");
-                    $('table').append(row);
-                }
-                else {
-                    row = $('<tr/>');
-                    row.append("<td>" + data[i].Id + "</td>");
-                    row.append("<td>" + data[i].Name + "</td>");
-                    row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
-                    row.append("<td>Snack</td>");
-                    row.append("<td><form>\
-                                <input type='hidden' name='Id' value='" + data[i].Id + "'>\
-                                <input type='number' name='Quantity' min='1' max='9' value='1'>\
-                                <input type='submit' value='Place Order'>\
-                                </form></td>");
-                    $('table').append(row);
-                }
+                                </form></td></tbody>");
+                    $('#tableofmenu').append(row);
             }
-        });
+            });
     });
 </script>
-<table class="table table-bordered table-condensed table-hover table-striped">
+<table id='tableofmenu' class="table table-bordered table-condensed table-hover table-striped">
+        <thead>
         <tr>
-        <th>Id</th>
         <th>Name</th>
         <th>Price</th>
         <th>Type</th>
         <th>Quantity</th>
         </tr>
+        </thead>
 </table>
 
 <form>
@@ -56,7 +43,7 @@
 <p>
     <input id="Password1" type="password" placeholder="Password"/></p>
 <p>
-    <input id="Submit1" type="submit" value="submit" /></p>
+    <input id="Submit1" type="submit" value="Submit" /></p>
 </form>
 
 

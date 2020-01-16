@@ -3,15 +3,159 @@
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
-
+Add Items To Menu
+<table class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Is Snack</th>
+            <th>IsWithdrawn</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th><input type="text" name="Name" id="Name"></th>
+            <th><input type="number" name="UnitPrice" id="UnitPrice"></th>
+            <th><input type="checkbox" name="IsSnack" id="IsSnack" value="true"></th>
+            <th><input type="checkbox" name="IsWithdrawn" id="IsWithdrawn" value="true"></th>
+            <th><button onclick='additem()'>Add Item</button></th>
+        </tr>
+    </tbody>
+</table>
+<p>
+    
+    <input type="text" name="Id" id="EId" hidden>
+    <table id="etable" class="table table-bordered table-condensed table-hover table-striped" hidden>
+        <caption>Edit Item</caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Is Snack</th>
+                <th>IsWithdrawn</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th><input type="text" name="Name" id="EName"></th>
+                <th><input type="number" name="UnitPrice" id="EUnitPrice"></th>
+                <th><input type="checkbox" name="IsSnack" id="EIsSnack" value="true"></th>
+                <th><input type="checkbox" name="IsWithdrawn" id="EIsWithdrawn" value="true"></th>
+                <th><button onclick='edititem()'>Edit Item</button></th>
+            </tr>
+        </tbody>
+    </table>
+    <table id="table2" class="table table-bordered table-condensed table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</p>
 <form>
-    <p>
-        <input id="Username1" type="text" placeholder="Username" />
-    </p>
-    <p>
-        <input id="Password1" type="password" placeholder="Password" />
-    </p>
-    <p>
-        <input id="Submit1" type="submit" value="submit" />
-    </p>
+    <input id="Username1" type="text" placeholder="Username" />
+    <input id="Password1" type="password" placeholder="Password" />
+    <input id="Submit1" type="submit" value="Login" />
 </form>
+
+<script>
+    function additem() {
+        $.ajax({
+            url: '../api/items/',
+            method: 'POST',
+            data: {
+                Name: document.getElementById("Name").value,
+                UnitPrice: document.getElementById("UnitPrice").value,
+                IsSnack: document.getElementById("IsSnack").value,
+                IsWithdrawn: document.getElementById("IsWithdrawn").value,
+            },
+            success: function () {
+                $('#table2 tbody').empty();
+                loaditems();
+            },
+            error: function () {
+                alert("error");
+            }
+
+        })
+    }
+    function deleteitem(id) {
+        $.ajax({
+            url: '../api/items/' + id,
+            method: 'DELETE',
+            data: 'authdata',
+            success: function () {
+                $('#table2 tbody').empty();
+                loaditems();
+            }
+        })
+    }
+    loaditems();
+    function loaditems() {
+        $(document).ready(function () {
+            $.getJSON("../api/items",
+                function (data) {
+                    var row;
+                    for (var i = 0; i < data.length; i++) {
+                        row = $('<tbody><tr/>');
+                        row.append("<td>" + data[i].Name + "</td>");
+                        row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
+                        if (!data[i].IsSnack) {
+                            row.append("<td>Drink</td>");
+                        } else { row.append("<td>Snack</td>"); }
+                        row.append("<td><button onclick='deleteitem(" + data[i].Id + ")'>Delete Item</button>\
+                                        <button onclick='loadedititem(" + i + ")'>Edit Item</button></td></tbody>");
+
+                        $('#table2').append(row);
+                    }
+                });
+        });
+    }
+    function loadedititem(id) {
+        $(document).ready(function () {
+            $.getJSON("../api/items",
+                function (data) {
+                    document.getElementById("EId").value = data[id].Id;
+                    document.getElementById("EName").value = data[id].Name;
+                    document.getElementById("EUnitPrice").value = data[id].UnitPrice;
+                    document.getElementById("EIsSnack").value = data[id].IsSnack;
+                    document.getElementById("EIsWithdrawn").value = data[id].IsWithdrawn;
+                });
+        });
+        document.getElementById("etable").style.display = "table";
+    }
+    function edititem() {
+        var eitem = {Id: document.getElementById("EId").value,
+                     Name: document.getElementById("EName").value,
+                     UnitPrice: document.getElementById("EUnitPrice").value,
+                     IsSnack: document.getElementById("EIsSnack").value,
+                     IsWithdrawn: document.getElementById("EIsWithdrawn").value,
+        };
+        $.ajax({
+            url: '../api/items/'+document.getElementById("EId").value,
+            method: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(eitem),
+            success: function () {
+                $('#table2 tbody').empty();
+                loaditems();
+                document.getElementById("etable").style.display = "none";
+                alert("Update Successfully");
+            },
+            error: function () {
+                alert("error");
+            }
+
+        })
+    }
+</script>
+
+
