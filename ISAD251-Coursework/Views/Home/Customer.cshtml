@@ -39,6 +39,28 @@
             }
     }
     selectmenu("both");
+    function login() {
+        $.ajax({
+            url: '../api/Users',
+            method: 'POST',
+            data: {
+                Username:$("#Username").val(),
+                Password:$("#Username").val(),
+            },
+            success: function (response) {
+                document.getElementById("APIKey").value = response;
+                alert("Login successful.");
+            },
+            error: function () {
+                alert("Invalid username or password.");
+            }
+        })
+    }
+    function checkpwenter(event) {
+        if (event.keyCode == 13) {
+            login();
+        }
+    }
 </script>
 <h1>Menu</h1>
 <button onclick="selectmenu('drink')">Drinks</button>
@@ -55,13 +77,10 @@
         </thead>
 </table>
 
-<form>
-<p>
-    <input id="Username1" type="text" placeholder="Username"/></p>
-<p>
-    <input id="Password1" type="password" placeholder="Password"/></p>
-<p>
-    <input id="Submit1" type="submit" value="Submit" /></p>
-</form>
+    <input type="hidden" id="APIKey">
+    <input id="Username" type="text" placeholder="Username" onkeydown="checkpwenter(event)"/>
+    <input id="Password" type="password" placeholder="Password" onkeydown="checkpwenter(event)"/>
+    <button id="Login" onclick="login()" >Login</button>
+
 
 

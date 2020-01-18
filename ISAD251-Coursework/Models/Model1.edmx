@@ -30,8 +30,10 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Username" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Password" Type="nvarchar(max)" />
+          <Property Name="Salt" Type="nvarchar(max)" />
           <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="APIKey" Type="nvarchar(max)" />
         </EntityType>
         <Association Name="FK_OrderItem">
           <End Role="Items" Type="Self.Items" Multiplicity="1" />
@@ -93,9 +95,11 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Username" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Password" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Salt" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Orders" Relationship="Model.UserOrder" FromRole="User" ToRole="Order" />
+          <Property Name="APIKey" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -155,7 +159,9 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Username" ColumnName="Username" />
           <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Salt" ColumnName="Salt" />
           <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+          <ScalarProperty Name="APIKey" ColumnName="APIKey" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

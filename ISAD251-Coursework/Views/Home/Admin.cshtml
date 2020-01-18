@@ -74,8 +74,8 @@ Add Items To Menu
             data: {
                 Name: document.getElementById("Name").value,
                 UnitPrice: document.getElementById("UnitPrice").value,
-                IsSnack: document.getElementById("IsSnack").value,
-                IsWithdrawn: document.getElementById("IsWithdrawn").value,
+                IsSnack: document.getElementById("IsSnack").checked,
+                IsWithdrawn: document.getElementById("IsWithdrawn").checked,
             },
             success: function () {
                 $('#table2 tbody').empty();
