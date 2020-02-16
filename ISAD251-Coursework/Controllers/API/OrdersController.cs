@@ -19,7 +19,19 @@ namespace ISAD251_Coursework.Controllers
         // GET: api/Orders
         public IQueryable<Order> GetOrders()
         {
-            return db.Orders;
+            String APIKey = System.Web.HttpContext.Current.Request.QueryString["APIKey"];
+            var usr = db.Users.Where(obj => obj.APIKey.Equals(APIKey)).FirstOrDefault();
+            if (usr != null)
+            {
+                if (usr.IsAdmin) {
+                    return db.Orders;
+                }
+                else {
+                    return db.Orders.Where(a => a.UserId.Equals(usr.Id));
+                }
+            }
+
+            return null;
         }
 
         // GET: api/Orders/5
@@ -76,13 +88,21 @@ namespace ISAD251_Coursework.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Input data error.");
             }
+            String APIKey = System.Web.HttpContext.Current.Request.QueryString["APIKey"];
+            var usr = db.Users.Where(obj => obj.APIKey.Equals(APIKey)).FirstOrDefault();
+            if (usr != null)
+            {
+                order.OrderTime= DateTime.Now;
+                order.UserId=usr.Id;
+                db.Orders.Add(order);
+                db.SaveChanges();
 
-            db.Orders.Add(order);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = order.Id }, order);
+                return CreatedAtRoute("DefaultApi", new { id = order.Id }, order);
+            }
+            else {return BadRequest("Please login first."); }
+            
         }
 
         // DELETE: api/Orders/5

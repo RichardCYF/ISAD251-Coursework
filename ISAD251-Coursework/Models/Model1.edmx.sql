@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 01/18/2020 21:14:53
--- Generated from EDMX file: C:\Users\Dick\Documents\ISAD251-Coursework\ISAD251-Coursework\Models\Model1.edmx
+-- Date Created: 02/13/2020 12:11:33
+-- Generated from EDMX file: C:\Users\Deamon\Desktop\ISAD251-Coursework\ISAD251-Coursework\Models\Model1.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -20,22 +20,22 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_OrderItem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Orders] DROP CONSTRAINT [FK_OrderItem];
 GO
-IF OBJECT_ID(N'[dbo].[FK_UserOrder]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Orders] DROP CONSTRAINT [FK_UserOrder];
+IF OBJECT_ID(N'[dbo].[FK_OrderUser]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Orders] DROP CONSTRAINT [FK_OrderUser];
 GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[Items]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Items];
+IF OBJECT_ID(N'[dbo].[Users]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Users];
 GO
 IF OBJECT_ID(N'[dbo].[Orders]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Orders];
 GO
-IF OBJECT_ID(N'[dbo].[Users]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Users];
+IF OBJECT_ID(N'[dbo].[Items]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Items];
 GO
 
 -- --------------------------------------------------
@@ -56,9 +56,11 @@ GO
 -- Creating table 'Orders'
 CREATE TABLE [dbo].[Orders] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [OrderTime] time  NOT NULL,
+    [OrderTime] datetime  NOT NULL,
+    [Quantity] int  NULL,
+    [ItemId] int  NOT NULL,
     [UserId] int  NOT NULL,
-    [ItemId] int  NOT NULL
+    [IsDelivered] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -66,7 +68,7 @@ GO
 CREATE TABLE [dbo].[Items] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(max)  NOT NULL,
-    [UnitPrice] decimal(18,0)  NOT NULL,
+    [UnitPrice] decimal(18,2)  NOT NULL,
     [IsSnack] bit  NOT NULL,
     [IsWithdrawn] bit  NOT NULL
 );
@@ -98,21 +100,6 @@ GO
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
--- Creating foreign key on [UserId] in table 'Orders'
-ALTER TABLE [dbo].[Orders]
-ADD CONSTRAINT [FK_UserOrder]
-    FOREIGN KEY ([UserId])
-    REFERENCES [dbo].[Users]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_UserOrder'
-CREATE INDEX [IX_FK_UserOrder]
-ON [dbo].[Orders]
-    ([UserId]);
-GO
-
 -- Creating foreign key on [ItemId] in table 'Orders'
 ALTER TABLE [dbo].[Orders]
 ADD CONSTRAINT [FK_OrderItem]
@@ -126,6 +113,21 @@ GO
 CREATE INDEX [IX_FK_OrderItem]
 ON [dbo].[Orders]
     ([ItemId]);
+GO
+
+-- Creating foreign key on [UserId] in table 'Orders'
+ALTER TABLE [dbo].[Orders]
+ADD CONSTRAINT [FK_OrderUser]
+    FOREIGN KEY ([UserId])
+    REFERENCES [dbo].[Users]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_OrderUser'
+CREATE INDEX [IX_FK_OrderUser]
+ON [dbo].[Orders]
+    ([UserId]);
 GO
 
 -- --------------------------------------------------

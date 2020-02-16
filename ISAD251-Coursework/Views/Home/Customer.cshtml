@@ -4,83 +4,186 @@
 <h2>@ViewBag.Title.</h2>
 
 <script>
-    function loadmenu(type){
+    function loadmenu(type) {
+        $('#tableofmenu tbody').empty();
         $(document).ready(function () {
             $.getJSON("../api/items",
                 function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        var row;
-                        if (!data[i].IsWithdrawn) {
-                            if (type == 'snack' && !data[i].IsSnack) { row = $('<tbody hidden><tr/>'); }
-                            else if (type == 'drink' && data[i].IsSnack) { row = $('<tbody hidden><tr/>'); }
-                            else { row = $('<tbody><tr/>'); }
-                            row.append("<td>" + data[i].Name + "</td>");
-                            row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
-                            if (!data[i].IsSnack) {
-                                row.append("<td>Drink</td>");
-                            } else { row.append("<td>Snack</td>"); }
-                            row.append("<td><form>\
-                                <input type='hidden' name='Id' value='" + data[i].Id + "'>\
-                                <input type='number' name='Quantity' min='1' max='9' value='1'>\
-                                <input type='submit' value='Place Order'>\
-                                </form></td></tbody>");
-                            $('#tableofmenu').append(row);
+                    if (type == 'drink') {
+                        for (var i = 0; i < data.length; i++) {
+                            var row;
+                            if (!data[i].IsWithdrawn && !data[i].IsSnack) {
+                                row = $('<tbody><tr/>');
+                                row.append("<td>" + data[i].Name + "</td>");
+                                row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
+                                if (!data[i].IsSnack) {
+                                    row.append("<td>Drink</td>");
+                                } else { row.append("<td>Snack</td>"); }
+                                row.append("<td>\
+                                <input type='hidden' name='Id' id='pid" + data[i].Id + "'>\
+                                <input type='number' name='Quantity' id='pquan"+ data[i].Id + "'min='1' max='9' value='1'>\
+                                <button onclick='placeorder(" + data[i].Id + ")'>Add to order</button>\
+                                </td></tbody>");
+                                $('#tableofmenu').append(row);
+                                $('#noshow').empty();
+                            }
+                        }
+                    }
+                    else if (type == 'snack') {
+                        for (var i = 0; i < data.length; i++) {
+                            var row;
+                            if (!data[i].IsWithdrawn && data[i].IsSnack) {
+                                row = $('<tbody><tr/>');
+                                row.append("<td>" + data[i].Name + "</td>");
+                                row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
+                                if (!data[i].IsSnack) {
+                                    row.append("<td>Drink</td>");
+                                } else { row.append("<td>Snack</td>"); }
+                                row.append("<td>\
+                                <input type='hidden' name='Id' id='pid" + data[i].Id + "'>\
+                                <input type='number' name='Quantity' id='pquan"+ data[i].Id + "'min='1' max='9' value='1'>\
+                                <button onclick='placeorder(" + data[i].Id + ")'>Add to order</button>\
+                                </td></tbody>");
+                                $('#tableofmenu').append(row);
+                                $('#noshow').empty();
+                            }
+                        }
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            var row;
+                            if (!data[i].IsWithdrawn) {
+                                row = $('<tbody><tr/>');
+                                row.append("<td>" + data[i].Name + "</td>");
+                                row.append("<td>$" + data[i].UnitPrice.toFixed(2) + "</td>");
+                                if (!data[i].IsSnack) {
+                                    row.append("<td>Drink</td>");
+                                } else { row.append("<td>Snack</td>"); }
+                                row.append("<td>\
+                                <input type='hidden' name='Id' id='pid" + data[i].Id + "'>\
+                                <input type='number' name='Quantity' id='pquan"+ data[i].Id + "'min='1' max='9' value='1'>\
+                                <button onclick='placeorder(" + data[i].Id + ")'>Add to order</button>\
+                                </td></tbody>");
+                                $('#tableofmenu').append(row);
+                                $('#noshow').empty();
+                            }
                         }
                     }
                 });
         });
     }
-    function selectmenu(type){
-            $('#tableofmenu tbody').empty();
-            switch (type) {
-                case "drink": loadmenu("drink"); break;
-                case "snack": loadmenu("snack"); break;
-                default: loadmenu("drink"); loadmenu("snack");
-            }
-    }
-    selectmenu("both");
-    function login() {
-        $.ajax({
-            url: '../api/Users',
-            method: 'POST',
-            data: {
-                Username:$("#Username").val(),
-                Password:$("#Username").val(),
-            },
-            success: function (response) {
-                document.getElementById("APIKey").value = response;
-                alert("Login successful.");
-            },
-            error: function () {
-                alert("Invalid username or password.");
-            }
-        })
-    }
-    function checkpwenter(event) {
-        if (event.keyCode == 13) {
-            login();
+    function sleep(miliseconds) {
+        var currentTime = new Date().getTime();
+        while (currentTime + miliseconds >= new Date().getTime()) {
         }
     }
+    function loadhistory() {
+        sleep(200);
+        if (document.getElementById("APIKey").value == "") {
+            alert("Please login first.");
+        } else {
+            document.getElementById("orderhistory").style.display = "inline-table"
+            $('#orderhistory tbody').empty();
+            $(document).ready(function () {
+                $.getJSON('../api/orders?APIKey=' + document.getElementById("APIKey").value,
+                    function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            var row;
+                            if (!data[i].IsWithdrawn) {
+                                row = $('<tbody><tr/>');
+                                row.append("<td>" + data[i].Item.Name + "</td>");
+                                row.append("<td>$" + data[i].Item.UnitPrice.toFixed(2) + "</td>");
+                                if (!data[i].Item.IsSnack) {
+                                    row.append("<td>Drink</td>");
+                                } else { row.append("<td>Snack</td>"); }
+                                row.append("<td>" + data[i].Quantity + "</td>");
+                                row.append("<td>" + data[i].OrderTime + "</td>");
+                                row.append("<td>\
+                                <button onclick='cancelorder(" + data[i].Id + ")'>Cancel order item</button>\
+                                </td></tbody>");
+                                $('#orderhistory').append(row);
+                            }
+                        }
+                    });
+            });
+        }
+    }
+    function selectmenu(type) {
+        $('#tableofmenu tbody').empty();
+        switch (type) {
+            case "drink": loadmenu("drink"); break;
+            case "snack": loadmenu("snack"); break;
+            default: loadmenu("everything");
+        }
+    }
+    function placeorder(pid) {
+        if (document.getElementById("APIKey").value) {
+            $.ajax({
+                url: '../api/orders?APIKey=' + document.getElementById("APIKey").value,
+                method: 'POST',
+                data: {
+                    ItemId: pid,
+                    Quantity: document.getElementById("pquan" + pid).value,
+                },
+                success: function () {
+                    alert("Order successful");
+                    loadhistory();
+                },
+                error: function () {
+                    alert("Cannot place order.");
+                }
+            })
+        } else {
+            alert("Please login first");
+        }
+    }
+    function cancelorder(oid) {
+        $.ajax({
+            url: '../api/orders/' + oid,
+            method: 'DELETE',
+            success: function () {
+                alert("Order cancelled");
+            },
+            error: function () {
+                alert("Cannot cancel order.");
+            }
+        })
+        loadhistory();
+    }
+
+    selectmenu("both");
 </script>
 <h1>Menu</h1>
 <button onclick="selectmenu('drink')">Drinks</button>
 <button onclick="selectmenu('snack')">Snacks</button>
 <button onclick="selectmenu('both')">Everything</button>
 <table id='tableofmenu' class="table table-bordered table-condensed table-hover table-striped">
-        <thead>
+    <thead>
         <tr>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Type</th>
-        <th>Quantity</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Type</th>
+            <th>Quantity</th>
         </tr>
-        </thead>
+    </thead>
 </table>
 
-    <input type="hidden" id="APIKey">
-    <input id="Username" type="text" placeholder="Username" onkeydown="checkpwenter(event)"/>
-    <input id="Password" type="password" placeholder="Password" onkeydown="checkpwenter(event)"/>
-    <button id="Login" onclick="login()" >Login</button>
+
+
+<h1>Order History</h1>
+<button onclick="loadhistory()">Load Order History</button>
+<table id='orderhistory' class="table table-bordered table-condensed table-hover table-striped" style="display:none">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Order Time</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
 
 
 

@@ -14,19 +14,14 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 @Html.ActionLink("ISAD251 Coursework", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Customer", "Customer", "Home")</li>
-                    <li>@Html.ActionLink("Admin", "Admin", "Home")</li>
-                </ul>
+            <div class="container text-right" style="margin-top:1%;padding:0;border:0;">
+                <input type="hidden" id="APIKey">
+                <input id="Username" type="text" placeholder="Username" onkeydown="checkpwenter(event)" />
+                <input id="Password" type="password" placeholder="Password" onkeydown="checkpwenter(event)" />
+                <button id="Login" onclick="login()">Login</button>
+                <button id="Logout" onclick="logout()" hidden>Logout</button>
             </div>
         </div>
     </div>
@@ -41,3 +36,35 @@
 
 </body>
 </html>
+<script>
+    function login() {
+        $.ajax({
+            url: '../api/Users',
+            method: 'POST',
+            data: {
+                Username: $("#Username").val(),
+                Password: $("#Password").val(),
+            },
+            success: function (response) {
+                document.getElementById("APIKey").value = response;
+                alert("Login successful.");
+                document.getElementById("Username").style.display = "none";
+                document.getElementById("Password").style.display = "none";
+                document.getElementById("Login").style.display = "none";
+                document.getElementById("Logout").style.display = "inline";
+                loadhistory();
+            },
+            error: function () {
+                alert("Invalid username or password.");
+            }
+        })
+    }
+    function logout() {
+            window.location.href = "../Home";
+        }
+    function checkpwenter(event) {
+        if (event.keyCode == 13) {
+            login();
+        }
+    }
+</script>

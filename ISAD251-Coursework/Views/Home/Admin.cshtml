@@ -2,8 +2,24 @@
     ViewBag.Title = "Admin Page";
 }
 <h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
-Add Items To Menu
+<h3>Customer Orders</h3>
+<button onclick="loadhistory()">Load Order History</button>
+<table id='orderhistory' class="table table-bordered table-condensed table-hover table-striped" style="display:none">
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Order Time</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+
+<h3>Add Items To Menu</h3>
 <table class="table table-bordered table-condensed table-hover table-striped">
     <thead>
         <tr>
@@ -25,7 +41,7 @@ Add Items To Menu
     </tbody>
 </table>
 <p>
-    
+    <h3>Edit Menu Items</h3>
     <input type="text" name="Id" id="EId" hidden>
     <table id="etable" class="table table-bordered table-condensed table-hover table-striped" hidden>
         <caption>Edit Item</caption>
@@ -41,7 +57,7 @@ Add Items To Menu
         <tbody>
             <tr>
                 <th><input type="text" name="Name" id="EName"></th>
-                <th><input type="number" name="UnitPrice" id="EUnitPrice"></th>
+                <th><input type="number" name="UnitPrice" id="EUnitPrice" step=".01"></th>
                 <th><input type="checkbox" name="IsSnack" id="EIsSnack" value="true"></th>
                 <th><input type="checkbox" name="IsWithdrawn" id="EIsWithdrawn" value="true"></th>
                 <th><button onclick='edititem()'>Edit Item</button></th>
@@ -60,13 +76,58 @@ Add Items To Menu
         </thead>
     </table>
 </p>
-<form>
-    <input id="Username1" type="text" placeholder="Username" />
-    <input id="Password1" type="password" placeholder="Password" />
-    <input id="Submit1" type="submit" value="Login" />
-</form>
 
 <script>
+    function completeorder(oid) {
+        $.ajax({
+            url: '../api/orders/' + oid,
+            method: 'DELETE',
+            success: function () {
+                alert("Order completed");
+            },
+            error: function () {
+                alert("Cannot complete order.");
+            }
+        })
+        loadhistory();
+    }
+    function sleep(miliseconds) {
+        var currentTime = new Date().getTime();
+        while (currentTime + miliseconds >= new Date().getTime()) {
+        }
+    }
+    function loadhistory() {
+        sleep(200);
+        if (document.getElementById("APIKey").value == "") {
+            alert("Please login first.");
+        } else {
+            document.getElementById("orderhistory").style.display = "inline-table"
+            $('#orderhistory tbody').empty();
+            $(document).ready(function () {
+                $.getJSON('../api/orders?APIKey=' + document.getElementById("APIKey").value,
+                    function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            var row;
+                            if (!data[i].IsWithdrawn) {
+                                row = $('<tbody><tr/>');
+                                row.append("<td>" + data[i].User.Username + "</td>");
+                                row.append("<td>" + data[i].Item.Name + "</td>");
+                                row.append("<td>$" + data[i].Item.UnitPrice.toFixed(2) + "</td>");
+                                if (!data[i].Item.IsSnack) {
+                                    row.append("<td>Drink</td>");
+                                } else { row.append("<td>Snack</td>"); }
+                                row.append("<td>" + data[i].Quantity + "</td>");
+                                row.append("<td>" + data[i].OrderTime + "</td>");
+                                row.append("<td>\
+                                <button onclick='completeorder(" + data[i].Id + ")'>Complete order item</button>\
+                                </td></tbody>");
+                                $('#orderhistory').append(row);
+                            }
+                        }
+                    });
+            });
+        }
+    }
     function additem() {
         $.ajax({
             url: '../api/items/',
@@ -137,14 +198,15 @@ Add Items To Menu
         document.getElementById("etable").style.display = "table";
     }
     function edititem() {
-        var eitem = {Id: document.getElementById("EId").value,
-                     Name: document.getElementById("EName").value,
-                     UnitPrice: document.getElementById("EUnitPrice").value,
-                     IsSnack: document.getElementById("EIsSnack").checked,
-                     IsWithdrawn: document.getElementById("EIsWithdrawn").checked,
+        var eitem = {
+            Id: document.getElementById("EId").value,
+            Name: document.getElementById("EName").value,
+            UnitPrice: document.getElementById("EUnitPrice").value,
+            IsSnack: document.getElementById("EIsSnack").checked,
+            IsWithdrawn: document.getElementById("EIsWithdrawn").checked,
         };
         $.ajax({
-            url: '../api/items/'+document.getElementById("EId").value,
+            url: '../api/items/' + document.getElementById("EId").value,
             method: 'PUT',
             contentType: 'application/json',
             dataType: 'json',

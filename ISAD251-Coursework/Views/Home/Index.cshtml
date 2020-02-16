@@ -2,12 +2,17 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>Welcome to the ISAD251 Public Bar</h1>
-    <p class="lead">
-        <img alt="" src="../Images/stock-vector-beer-poster-or-banner-with-text-all-you-nees-is-beer-and-names-types-of-beer-colorful-graphic-1100975732.jpg" height="100%" width="100%" />Image Royalty-Free From Shutterstock</p>
-
-    <p><a href="Customer" class="btn btn-primary btn-lg">Customer Login &raquo;</a></p>
-    <p><a href="Admin" class="btn btn-primary btn-lg">Admin Login &raquo;</a></p>
-</div>
-
+    <div class="jumbotron">
+        <h1>Welcome to the ISAD251 Public Bar</h1>
+        <p><a href="/Home/Customer" class="btn btn-primary btn-lg">Customer Login &raquo;</a></p>
+        <p><a href="/Home/Admin" class="btn btn-primary btn-lg">Admin Login &raquo;</a></p>
+        <p class="lead">
+            <img alt="" src="../Images/stock-vector-beer-poster-or-banner-with-text-all-you-nees-is-beer-and-names-types-of-beer-colorful-graphic-1100975732.jpg" height="100%" width="100%" />Image Royalty-Free From Shutterstock
+        </p>
+    </div>
+    <script>
+        document.getElementById("Username").style.display = "none";
+        document.getElementById("Password").style.display = "none";
+        document.getElementById("Login").style.display = "none";
+        document.getElementById("Logout").style.display = "none";
+    </script>

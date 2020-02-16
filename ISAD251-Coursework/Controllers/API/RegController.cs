@@ -14,7 +14,6 @@ using ISAD251_Coursework.Models;
 
 namespace ISAD251_Coursework.Controllers.API
 {
-
     public class RegController : ApiController
     {
         static byte[] GenerateHash(byte[] Text, byte[] salt)
@@ -100,17 +99,15 @@ namespace ISAD251_Coursework.Controllers.API
         [ResponseType(typeof(User))]
         public IHttpActionResult PostUser(User user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             byte[] Salt = GenerateSalt();
             user.Salt = Convert.ToBase64String(Salt);
             String TempPassword = user.Password;
             byte[] PasswordHash = GenerateHash(Encoding.ASCII.GetBytes(TempPassword), Salt);
             user.Password = Convert.ToBase64String(PasswordHash);
-
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             db.Users.Add(user);
             db.SaveChanges();
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
+
+
 namespace ISAD251_Coursework
 {
     public static class WebApiConfig
@@ -20,8 +22,10 @@ namespace ISAD251_Coursework
                 defaults: new { id = RouteParameter.Optional }
             );
             var json = config.Formatters.JsonFormatter;
-            json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+            json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.None;
             config.Formatters.Remove(config.Formatters.XmlFormatter);
+
+
         }
     }
 }

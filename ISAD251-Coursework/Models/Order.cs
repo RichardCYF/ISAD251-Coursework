@@ -14,12 +14,19 @@ namespace ISAD251_Coursework.Models
     
     public partial class Order
     {
-        public int Id { get; set; }
-        public System.TimeSpan OrderTime { get; set; }
-        public int UserId { get; set; }
-        public int ItemId { get; set; }
+        public Order()
+        {
+            this.IsDelivered = "False";
+        }
     
-        public virtual User User { get; set; }
+        public int Id { get; set; }
+        public System.DateTime OrderTime { get; set; }
+        public Nullable<int> Quantity { get; set; }
+        public int ItemId { get; set; }
+        public int UserId { get; set; }
+        public string IsDelivered { get; set; }
+    
         public virtual Item Item { get; set; }
+        public virtual User User { get; set; }
     }
 }

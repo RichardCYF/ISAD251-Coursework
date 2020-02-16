@@ -41,6 +41,21 @@ namespace ISAD251_Coursework.Controllers.API
         }
 
         private Entities db = new Entities();
+        // GET: api/Users/
+        [ResponseType(typeof(User))]
+        public IHttpActionResult GetUser()
+        {
+            String APIKey = System.Web.HttpContext.Current.Request.QueryString["APIKey"];
+            User user = db.Users.Where(obj => obj.APIKey.Equals(APIKey)).FirstOrDefault();
+            if (user != null && APIKey != "" && APIKey != null)
+            {
+                user.APIKey = null;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return Ok("APIKey nullified.");
+            }
+            return Ok("Input error.");
+        }
 
         // POST: api/Users
         [ResponseType(typeof(User))]
@@ -60,7 +75,7 @@ namespace ISAD251_Coursework.Controllers.API
                 byte[] PasswordHash = Convert.FromBase64String(usr.Password);
                 if (System.Collections.StructuralComparisons.StructuralEqualityComparer.Equals(PasswordHash, InputPasswordHash))
                 {
-                    usr.APIKey = Convert.ToBase64String(GenerateSalt());
+                    usr.APIKey = Convert.ToBase64String(GenerateSalt()).Replace("=","Z").Replace("\\","A").Replace("/","D").Replace("+","");
                     db.Entry(usr).State = EntityState.Modified;
                     db.SaveChanges();
                     return Ok(usr.APIKey);
